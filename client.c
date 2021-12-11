@@ -11,6 +11,8 @@
 
 #include "common.h"
 
+const int BUFF_SIZE = 1024;
+
 int main(int argc, char const *argv[]) {
     const char *pseudo = argv[1];
     const char *ip = argv[2]; // 127.0.0.1
@@ -27,19 +29,22 @@ int main(int argc, char const *argv[]) {
     checked(inet_pton(AF_INET, ip, &serv_addr.sin_addr));
 
     checked(connect(sock, (struct sockaddr *)&serv_addr, sizeof(serv_addr)));
-    char buffer[1024];
+    char buffer[BUFF_SIZE];
     ssize_t nbytes = 1;
-    while (nbytes > 0 && fgets(buffer, 1024, stdin)) {
-        // Supprimer le \n
+    while (nbytes > 0 && fgets(buffer, BUFF_SIZE, stdin)) {
+        //Longueur du message size_t
         size_t len = strlen(buffer);
+        // Supprimer le \n
         buffer[len - 1] = '\0';
+
         // On garde la même taille de string pour explicitement envoyer le '\0'
+        //int ssend(int sock, void* data, size_t len) {
         nbytes = ssend(sock, buffer, len);
         if (nbytes > 0) {
             char *recvbuffer;
             nbytes = receive(sock, (void *)&recvbuffer);
             if (nbytes > 0) {
-                printf("Echo: %s\n", recvbuffer);
+                printf("Client received %s\n", recvbuffer);
                 free(recvbuffer);
             }
         }

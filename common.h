@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <time.h>
 
 int conv_port(const char *temp_port) {
     char *p;
@@ -40,6 +41,16 @@ int _checked(int ret, char* calling_function) {
  */
 int ssend(int sock, void* data, size_t len) {
     checked(write(sock, &len, sizeof(len)));
+
+//    time_t mytime = time(NULL);
+//    char * timestamp = ctime(&mytime);
+//    timestamp[strlen(timestamp)-1] = '\0';
+
+//    char timenow[20];
+//    time_t now = time(NULL);
+//    strftime(timenow, 20, "%Y-%m-%d %H:%M:%S", localtime(&now));
+//    endata = timenow+data;
+//    printf("%s", endata);
     return checked(write(sock, data, len));
 }
 
