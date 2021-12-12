@@ -12,8 +12,15 @@
 #include "common.h"
 
 const int BUFF_SIZE = 1024;
+///
+/// \param argc
+/// \param argv
+/// \return
+int main(int argc,
+         char const *argv[]) {
+    if argc != 3{
 
-int main(int argc, char const *argv[]) {
+    }
     const char *pseudo = argv[1];
     const char *ip = argv[2]; // 127.0.0.1
     const char *temp_port = argv[3];

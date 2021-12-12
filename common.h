@@ -6,6 +6,9 @@
 #include <unistd.h>
 #include <time.h>
 
+///
+/// \param temp_port
+/// \return
 int conv_port(const char *temp_port) {
     char *p;
     int num;
@@ -24,6 +27,10 @@ int conv_port(const char *temp_port) {
     return num;
 }
 
+///
+/// \param ret return number of calling_function to be checked
+/// \param calling_function
+/// \return
 int _checked(int ret, char* calling_function) {
     if (ret < 0) {
         perror(calling_function);
@@ -39,6 +46,12 @@ int _checked(int ret, char* calling_function) {
  * @brief Send data under the form <size_t len><...data>
  * Function name is 'ssend' instead of 'send' because the latter already exists.
  */
+
+///
+/// \param sock socket to send data to
+/// \param data to be sent
+/// \param len of data
+/// \return
 int ssend(int sock, void* data, size_t len) {
     checked(write(sock, &len, sizeof(len)));
 
@@ -57,6 +70,11 @@ int ssend(int sock, void* data, size_t len) {
 /**
  * @brief Receive data under the form <size_t len><data...>.
  */
+
+///
+/// \param sock socket to receive data from
+/// \param dest destination
+/// \return
 size_t receive(int sock, void** dest) {
     size_t nbytes_to_receive;
     if (checked(read(sock, &nbytes_to_receive, sizeof(nbytes_to_receive))) == 0) {

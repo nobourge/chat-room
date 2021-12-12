@@ -13,14 +13,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9409d901-51e5-4eef-99aa-3d0ee50b7ff7" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/client.c" beforeDir="false" afterPath="$PROJECT_DIR$/client.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server.c" beforeDir="false" afterPath="$PROJECT_DIR$/server.c" afterDir="false" />
-    </list>
-    <list id="ed001e0f-e1e8-4513-b800-12ced39711d5" name="Changes by Boss" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client" beforeDir="false" afterPath="$PROJECT_DIR$/client" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/client.c" beforeDir="false" afterPath="$PROJECT_DIR$/client.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/common.h" beforeDir="false" afterPath="$PROJECT_DIR$/common.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server.c" beforeDir="false" afterPath="$PROJECT_DIR$/server.c" afterDir="false" />
     </list>
+    <list id="ed001e0f-e1e8-4513-b800-12ced39711d5" name="Changes by Boss" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -31,29 +29,6 @@
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
-  </component>
-  <component name="LineStatusTrackerManager">
-    <file path="$PROJECT_DIR$/client.c">
-      <ranges>
-        <range start1="12" end1="12" start2="12" end2="14" changelist="ed001e0f-e1e8-4513-b800-12ced39711d5" />
-        <range start1="29" end1="30" start2="31" end2="32" changelist="ed001e0f-e1e8-4513-b800-12ced39711d5" />
-        <range start1="31" end1="33" start2="33" end2="35" changelist="9409d901-51e5-4eef-99aa-3d0ee50b7ff7" />
-        <range start1="34" end1="34" start2="36" end2="37" changelist="ed001e0f-e1e8-4513-b800-12ced39711d5" />
-        <range start1="35" end1="35" start2="38" end2="39" changelist="9409d901-51e5-4eef-99aa-3d0ee50b7ff7" />
-        <range start1="36" end1="36" start2="40" end2="41" changelist="9409d901-51e5-4eef-99aa-3d0ee50b7ff7" />
-        <range start1="41" end1="42" start2="46" end2="47" changelist="ed001e0f-e1e8-4513-b800-12ced39711d5" />
-      </ranges>
-    </file>
-    <file path="$PROJECT_DIR$/server.c">
-      <ranges>
-        <range start1="21" end1="21" start2="21" end2="23" changelist="ed001e0f-e1e8-4513-b800-12ced39711d5" />
-        <range start1="22" end1="43" start2="24" end2="25" changelist="9409d901-51e5-4eef-99aa-3d0ee50b7ff7" />
-        <range start1="49" end1="50" start2="31" end2="32" changelist="9409d901-51e5-4eef-99aa-3d0ee50b7ff7" />
-        <range start1="56" end1="57" start2="38" end2="39" changelist="9409d901-51e5-4eef-99aa-3d0ee50b7ff7" />
-        <range start1="60" end1="62" start2="42" end2="44" changelist="9409d901-51e5-4eef-99aa-3d0ee50b7ff7" />
-        <range start1="64" end1="131" start2="46" end2="86" changelist="9409d901-51e5-4eef-99aa-3d0ee50b7ff7" />
-      </ranges>
-    </file>
   </component>
   <component name="ProjectId" id="228IKV82XehhQp5HCJM45E4GX4M" />
   <component name="ProjectViewState">
@@ -81,9 +56,9 @@
     </key>
   </component>
   <component name="RunManager">
-    <configuration default="true" type="CLionExternalRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
+    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
       <method v="2">
-        <option name="CLION.EXTERNAL.BUILD" enabled="true" />
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
     <configuration default="true" type="GradleAppRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
@@ -102,7 +77,8 @@
       <updated>1639212723541</updated>
       <workItem from="1639212725052" duration="2456000" />
       <workItem from="1639229314935" duration="163000" />
-      <workItem from="1639229713367" duration="4703000" />
+      <workItem from="1639229713367" duration="4723000" />
+      <workItem from="1639324573063" duration="3783000" />
     </task>
     <servers />
   </component>
