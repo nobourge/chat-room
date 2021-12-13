@@ -24,9 +24,9 @@ const int BUFF_SIZE = 1024;
 
 int main(int argc, char *argv[])
 {
-    if (argc != 1)
+    if (argc != 2)
     {
-        printf("USAGE: $ ./server <port> \n");
+        printf("USAGE: $ ./server <port> \n %d", argc);
         exit(1);
     }
     const char *temp_port = argv[1];
@@ -63,21 +63,28 @@ int main(int argc, char *argv[])
         select(max_fd + 1, &readfds, NULL, NULL, NULL);
 
         if (FD_ISSET(master_socket, &readfds)) {
-            // Si c'est le master socket qui a des donnees, c'est une nouvele connexion.
+            // Si c'est le master socket qui a des donnees, c'est une nouvelle connexion.
             clients[nclients] = accept(master_socket, (struct sockaddr *)&address, (socklen_t *)&addrlen);
             nclients++;
+
         } else {
             // Sinon, c'est un message d'un client
             for (int i = 0; i < nclients; i++) {
                 if (FD_ISSET(clients[i], &readfds)) {
                     char *buffer;
+                    char *pseudo;
+                    size_t nbytez = receive(clients[i], (void *)&pseudo);
                     size_t nbytes = receive(clients[i], (void *)&buffer);
-                    printf("size = %li\nmessage = %s\n", nbytes, buffer);
-
                     if (nbytes > 0) {  // closed
+                        printf("User %s a dit %s\n", pseudo, buffer);
                         ssend(clients[i], buffer, nbytes);
                         free(buffer);
-                    } else {
+                    }
+                    else if (nbytez > 0) {
+                        ssend(clients[i], pseudo, nbytez);
+                        free(pseudo);
+                    }
+                    else {
                         close(clients[i]);
                         // On deplace le dernier socket a la place de libre pur ne pas faire de trou.
                         clients[i] = clients[nclients - 1];
@@ -87,6 +94,5 @@ int main(int argc, char *argv[])
             }
         }
     }
-
     return 0;
 }

@@ -13,21 +13,22 @@
 
 #include "common.h"
 
-
 const int BUFF_SIZE = 1024;
+
 ///
 /// \param argc
 /// \param argv
 /// \return
 int main(int argc,
-         char const *argv[]){
-    if (argc != 3)
+         char *argv[]){
+    if (argc != 4)
     {
         printf("USAGE: $ ./client <pseudo> <ip_serveur> <port> \n"),
         exit(1);
     };
+//    printf("You have entered %d  arguments: \n", argc);
 
-    const char *pseudo = argv[1];
+    char *pseudo = argv[1];
     const char *ip = argv[2]; // 127.0.0.1
     const char *temp_port = argv[3];
     // converting char to int
@@ -45,6 +46,7 @@ int main(int argc,
                             ip,
                             &serv_addr.sin_addr));
 
+    //connection demand
     checked(connect(sock,
                         (struct sockaddr *)&serv_addr,
                                 sizeof(serv_addr)));
@@ -56,7 +58,7 @@ int main(int argc,
     ssend(sock, pseudo, pseudo_len);
 
     while (nbytes > 0
-            && fgets(buffer,
+            && printf("Entrez votre message: "), fgets(buffer,
                      BUFF_SIZE,
                      stdin)
                      )
