@@ -49,6 +49,11 @@ int main(int argc, char *argv[])
     fd_set readfds;
     int clients[BUFF_SIZE];
     int nclients = 0;
+
+    //database indice=id value=pseudo (a voir si ca marche)
+    //double users[1024];
+    const char *users[8];
+
     while (true) {
         FD_ZERO(&readfds);
         FD_SET(master_socket, &readfds);
@@ -67,22 +72,31 @@ int main(int argc, char *argv[])
             clients[nclients] = accept(master_socket, (struct sockaddr *)&address, (socklen_t *)&addrlen);
             nclients++;
 
+//            for (int i = 0; i < nclients; i++) {
+//                //char *pseudo;
+//                char *pseudo;
+//
+//                //size_t nbytez = receive(clients[i], (void *) &pseudo);
+//                size_t nbytez = receive(clients[i], (void *) &pseudo);
+//                //users[clients[i]] = *pseudo;
+//                users[clients[i]] = &pseudo;
+//
+//                //a[0] = "blah";
+//                //a[1] = "hmm";
+//                printf("pseudo = %d", *pseudo);
+//            }
+
         } else {
             // Sinon, c'est un message d'un client
             for (int i = 0; i < nclients; i++) {
                 if (FD_ISSET(clients[i], &readfds)) {
                     char *buffer;
-                    char *pseudo;
-                    size_t nbytez = receive(clients[i], (void *)&pseudo);
                     size_t nbytes = receive(clients[i], (void *)&buffer);
                     if (nbytes > 0) {  // closed
-                        printf("User %s a dit %s\n", pseudo, buffer);
+                        // printf("User %s a dit %s\n", users[clients[i]], buffer);
+                        printf("User %d a dit %s\n", clients[i], buffer);
                         ssend(clients[i], buffer, nbytes);
                         free(buffer);
-                    }
-                    else if (nbytez > 0) {
-                        ssend(clients[i], pseudo, nbytez);
-                        free(pseudo);
                     }
                     else {
                         close(clients[i]);

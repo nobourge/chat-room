@@ -54,8 +54,8 @@ int main(int argc,
     ssize_t nbytes = 1;
 
     //send pseudo
-    size_t pseudo_len = strlen(pseudo);
-    ssend(sock, pseudo, pseudo_len);
+//    size_t pseudo_len = strlen(pseudo);
+//    ssend(sock, pseudo, pseudo_len);
 
     while (nbytes > 0
             && printf("Entrez votre message: "), fgets(buffer,
