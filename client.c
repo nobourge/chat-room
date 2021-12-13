@@ -8,8 +8,11 @@
 #include <errno.h>   // for errno
 #include <limits.h>  // for INT_MAX, INT_MIN
 #include <stdlib.h>  // for strtol
+#include <signal.h>
+#include <stdbool.h>
 
 #include "common.h"
+
 
 const int BUFF_SIZE = 1024;
 ///
@@ -17,28 +20,47 @@ const int BUFF_SIZE = 1024;
 /// \param argv
 /// \return
 int main(int argc,
-         char const *argv[]) {
-    if argc != 3{
+         char const *argv[]){
+    if (argc != 3)
+    {
+        printf("USAGE: $ ./client <pseudo> <ip_serveur> <port> \n"),
+        exit(1);
+    };
 
-    }
     const char *pseudo = argv[1];
     const char *ip = argv[2]; // 127.0.0.1
     const char *temp_port = argv[3];
     // converting char to int
     int port = conv_port(temp_port);
 
-    int sock = checked(socket(AF_INET, SOCK_STREAM, 0));
+    int sock = checked(socket(AF_INET,
+                                  SOCK_STREAM,
+                                  0));
     struct sockaddr_in serv_addr;
     serv_addr.sin_family = AF_INET;
     serv_addr.sin_port = htons(port);
 
     // Conversion de string vers IPv4 ou IPv6 en binaire
-    checked(inet_pton(AF_INET, ip, &serv_addr.sin_addr));
+    checked(inet_pton(AF_INET,
+                            ip,
+                            &serv_addr.sin_addr));
 
-    checked(connect(sock, (struct sockaddr *)&serv_addr, sizeof(serv_addr)));
+    checked(connect(sock,
+                        (struct sockaddr *)&serv_addr,
+                                sizeof(serv_addr)));
     char buffer[BUFF_SIZE];
     ssize_t nbytes = 1;
-    while (nbytes > 0 && fgets(buffer, BUFF_SIZE, stdin)) {
+
+    //send pseudo
+    size_t pseudo_len = strlen(pseudo);
+    ssend(sock, pseudo, pseudo_len);
+
+    while (nbytes > 0
+            && fgets(buffer,
+                     BUFF_SIZE,
+                     stdin)
+                     )
+    {
         //Longueur du message size_t
         size_t len = strlen(buffer);
         // Supprimer le \n
@@ -56,5 +78,7 @@ int main(int argc,
             }
         }
     }
+    printf("Program is shutting down.\n");
+    return EXIT_SUCCESS;
     return 0;
 }

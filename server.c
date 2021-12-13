@@ -22,7 +22,13 @@
 
 const int BUFF_SIZE = 1024;
 
-int main(int argc, char *argv[]) {
+int main(int argc, char *argv[])
+{
+    if (argc != 1)
+    {
+        printf("USAGE: $ ./server <port> \n");
+        exit(1);
+    }
     const char *temp_port = argv[1];
     // converting char to int
     int port = conv_port(temp_port);
