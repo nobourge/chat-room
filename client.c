@@ -21,14 +21,22 @@ const int BUFF_SIZE = 1024;
 /// \return
 int main(int argc,
          char *argv[]){
+
     if (argc != 4)
     {
+        printf("You have entered %d  arguments: \n", argc);
         printf("USAGE: $ ./client <pseudo> <ip_serveur> <port> \n"),
         exit(1);
-    };
-//    printf("You have entered %d  arguments: \n", argc);
+    }
 
     char *pseudo = argv[1];
+    size_t pseudo_len = strlen(pseudo);
+    if (pseudo_len < 3 || 25 < pseudo_len )
+    {
+        printf(" <pseudo> characters quantity must be between 3 and 25 \n"),
+        exit(1);
+    }
+
     const char *ip = argv[2]; // 127.0.0.1
     const char *temp_port = argv[3];
     // converting char to int
@@ -54,8 +62,7 @@ int main(int argc,
     ssize_t nbytes = 1;
 
     //send pseudo
-//    size_t pseudo_len = strlen(pseudo);
-//    ssend(sock, pseudo, pseudo_len);
+    ssend(sock, pseudo, pseudo_len);
 
     while (nbytes > 0
             && printf("Entrez votre message: "), fgets(buffer,
