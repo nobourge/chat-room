@@ -86,7 +86,9 @@ int main(int argc, char *argv[])
 //                printf("pseudo = %d", *pseudo);
 //            }
 
-        } else {
+        }
+        else
+        {
             // Sinon, c'est un message d'un client
             for (int i = 0; i < nclients; i++) {
                 if (FD_ISSET(clients[i], &readfds)) {
@@ -95,12 +97,14 @@ int main(int argc, char *argv[])
                     if (nbytes > 0) {  // closed
                         // printf("User %s a dit %s\n", users[clients[i]], buffer);
                         printf("User %d a dit %s\n", clients[i], buffer);
-                        ssend(clients[i], buffer, nbytes);
+                        for (int j = 0; j < nclients; j++){
+                            ssend(clients[j], buffer, nbytes);
+                        }
                         free(buffer);
                     }
                     else {
                         close(clients[i]);
-                        // On deplace le dernier socket a la place de libre pur ne pas faire de trou.
+                        // On deplace le dernier socket a la place de libre pour ne pas faire de trou.
                         clients[i] = clients[nclients - 1];
                         nclients--;
                     }

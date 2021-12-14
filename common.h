@@ -82,15 +82,18 @@ size_t receive(int sock, void** dest) {
         return 0;
     };
     unsigned char* buffer = malloc(nbytes_to_receive);
-    if (buffer == NULL) {
+    if (buffer == NULL)
+    {
         fprintf(stderr, "malloc could not allocate %zd bytes", nbytes_to_receive);
         perror("");
         exit(1);
     }
     size_t total_received = 0;
-    while (nbytes_to_receive > 0) {
+    while (nbytes_to_receive > 0)
+    {
         size_t received = checked(read(sock, &buffer[total_received], nbytes_to_receive));
-        if (received < 0) {
+        if (received < 0)
+        {
             return total_received;
         }
         total_received += received;

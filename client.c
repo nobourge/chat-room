@@ -81,6 +81,5 @@ int main(int argc,
         }
     }
     printf("Program is shutting down.\n");
-    return EXIT_SUCCESS;
     return 0;
 }
