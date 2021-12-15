@@ -57,8 +57,8 @@ int main(int argc, char *argv[])
     /**database indice=id value=pseudo (a voir si ca marche)*/
     //double users[1024];
     //char *pseudos[8][32] = { 0 };
-    char pseudos[8] = { 0 };
-    /**
+    //char pseudos[8] = { 0 };
+
     #define ID_LEN 25
 
     int variableNumberOfElements = 8;
@@ -67,14 +67,14 @@ int main(int argc, char *argv[])
     pseudos = malloc(variableNumberOfElements * sizeof(char*));
     for (int i = 0; i < variableNumberOfElements; i++){
         pseudos[i] = malloc((ID_LEN+1) * sizeof(char));
-        strcpy_s(pseudos[i], "NULL");
+        strcpy(pseudos[i], "NULL");
     }
-    */
+
 
     printf("begin \n");
     for (int i = 0; i < 8; i++)
     {
-        printf("%d : %c \n", i, pseudos[i]);
+        printf("%d : %s \n", i, pseudos[i]);
     }
     printf("end \n");
 
@@ -147,14 +147,15 @@ int main(int argc, char *argv[])
                         printf("begin \n");
                         for (int i = 0; i < 8; i++)
                         {
-                            printf("%d : %c \n", i, pseudos[i]);
+                            printf("%d : %s \n", i, pseudos[i]);
                         }
                         printf("end \n");
 
-                        if (pseudos[i] == 0)
+                        if (strcmp(pseudos[i], "NULL") == 0)
                         {
                             /**not yet connected*/
                             char *pseudo = buffer;
+                            //char pseudo[] = buffer;
 
                             //printf(" pseudo %d : %s \n", i, pseudos[i]);
 
@@ -163,31 +164,30 @@ int main(int argc, char *argv[])
                             printf("begin \n");
                             for (int i = 0; i < 8; i++)
                             {
-                                printf("%d : %c \n", i, pseudos[i]);
+                                printf("%d : %s \n", i, pseudos[i]);
                             }
                             printf("end \n");
 
                             //strcpy_s(pseudos[i], *buffer);
-                            //strcpy(pseudos[i], buffer);
-                            pseudos[i] = *buffer;
-                            printf("pseudo = %s", pseudo);
-                            for (int c = 0; c < strlen(pseudo); c++)
+                            strcpy(pseudos[i], buffer);
+                            //pseudos[i] = *buffer;
+                            //printf("pseudo = %s", pseudo);
 
                             printf("%s connected \n", pseudo);
 
-                            printf("%c connected \n", pseudos[i]);
+                            printf("%s connected \n", pseudos[i]);
                             //user pseudo registered
                             printf("begin \n");
                             for (int i = 0; i < 8; i++)
                             {
-                                printf("%d : %c \n", i, pseudos[i]);
+                                printf("%d : %s \n", i, pseudos[i]);
                             }
                             printf("end \n");
                         }
                         else
                         {
                             // printf("User %s a dit %s\n", users[clients[i]], buffer);
-                            printf("%c \n", pseudos[i]);
+                            printf("%s \n", pseudos[i]);
                             printf("a dit %s\n", buffer);
 
                             for (int j = 0; j < nclients; j++)
