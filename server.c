@@ -57,13 +57,24 @@ int main(int argc, char *argv[])
     /**database indice=id value=pseudo (a voir si ca marche)*/
     //double users[1024];
     //char *pseudos[8][32] = { 0 };
-    //char pseudos[8][32] = { 0 };
-    char const *pseudos[8] = { 0 };
-    //long pseudos[8] = { 0 };
+    char pseudos[8] = { 0 };
+    /**
+    #define ID_LEN 25
+
+    int variableNumberOfElements = 8;
+    char **pseudos;
+
+    pseudos = malloc(variableNumberOfElements * sizeof(char*));
+    for (int i = 0; i < variableNumberOfElements; i++){
+        pseudos[i] = malloc((ID_LEN+1) * sizeof(char));
+        strcpy_s(pseudos[i], "NULL");
+    }
+    */
+
     printf("begin \n");
     for (int i = 0; i < 8; i++)
     {
-        printf("%d : %s \n", i, pseudos[i]);
+        printf("%d : %c \n", i, pseudos[i]);
     }
     printf("end \n");
 
@@ -91,7 +102,8 @@ int main(int argc, char *argv[])
                 max_fd = clients[i];
             }
         }
-        // wait for an activity on one of the sockets, timeout is NULL
+        // wait for an activity on one of the sockets,
+        // timeout is NULL
         // select with
         // one fd_set in reading,
         // one fd_set in writing
@@ -103,7 +115,8 @@ int main(int argc, char *argv[])
 
         if (FD_ISSET(master_socket, &readfds)) {
 
-            // Si c'est le master socket qui a des donnees, c'est une nouvelle connexion.
+            // Si c'est le master socket qui a des donnees,
+            // c'est une nouvelle connexion.
             clients[nclients] = accept(master_socket, (struct sockaddr *)&address, (socklen_t *)&addrlen);
             nclients++;
             //printf("connection \n");
@@ -124,8 +137,8 @@ int main(int argc, char *argv[])
                 if (FD_ISSET(clients[i], &readfds))
                 {
                     //msg received on client_sockets[i]
-                    printf("before buffer init %d : %s \n", 0, pseudos[0]);
-                    printf("before buffer init %d : %s \n", i, pseudos[i]);
+                    //printf("before buffer init %d : %s \n", 0, pseudos[0]);
+                    //printf("before buffer init %d : %s \n", i, pseudos[i]);
 
                     char *buffer;
                     size_t nbytes = receive(clients[i], (void *)&buffer);
@@ -134,42 +147,47 @@ int main(int argc, char *argv[])
                         printf("begin \n");
                         for (int i = 0; i < 8; i++)
                         {
-                            printf("%d : %s \n", i, pseudos[i]);
+                            printf("%d : %c \n", i, pseudos[i]);
                         }
                         printf("end \n");
 
                         if (pseudos[i] == 0)
                         {
-                            //long pseudo = *buffer;
-                            printf(" pseudo %d : %s \n", i, pseudos[i]);
+                            /**not yet connected*/
+                            char *pseudo = buffer;
 
-                            //printf("%s", buffer);
-                            //user pseudo not registered
+                            //printf(" pseudo %d : %s \n", i, pseudos[i]);
+
+                            printf("buffer: %s", buffer);
+                            /** user pseudo not registered */
                             printf("begin \n");
                             for (int i = 0; i < 8; i++)
                             {
-                                printf("%d : %s \n", i, pseudos[i]);
+                                printf("%d : %c \n", i, pseudos[i]);
                             }
                             printf("end \n");
 
                             //strcpy_s(pseudos[i], *buffer);
                             //strcpy(pseudos[i], buffer);
-                            pseudos[i] = buffer;
-                            //pseudos[i] = pseudo;
-                            //printf("%s connected \n", pseudo);
-                            printf("%s connected \n", pseudos[i]);
+                            pseudos[i] = *buffer;
+                            printf("pseudo = %s", pseudo);
+                            for (int c = 0; c < strlen(pseudo); c++)
+
+                            printf("%s connected \n", pseudo);
+
+                            printf("%c connected \n", pseudos[i]);
                             //user pseudo registered
                             printf("begin \n");
                             for (int i = 0; i < 8; i++)
                             {
-                                printf("%d : %s \n", i, pseudos[i]);
+                                printf("%d : %c \n", i, pseudos[i]);
                             }
                             printf("end \n");
                         }
                         else
                         {
                             // printf("User %s a dit %s\n", users[clients[i]], buffer);
-                            printf("%s \n", pseudos[i]);
+                            printf("%c \n", pseudos[i]);
                             printf("a dit %s\n", buffer);
 
                             for (int j = 0; j < nclients; j++)
