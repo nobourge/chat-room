@@ -5,6 +5,10 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <time.h>
+#include <pthread.h>
+
+
+const int BUFF_SIZE = 1024;
 
 ///
 /// \param temp_port
@@ -75,7 +79,8 @@ int ssend(int sock, void* data, size_t len) {
 /// \param sock socket to receive data from
 /// \param dest destination
 /// \return
-size_t receive(int sock, void** dest) {
+size_t receive(int sock, void** dest)
+{
     size_t nbytes_to_receive;
     if (checked(read(sock, &nbytes_to_receive, sizeof(nbytes_to_receive))) == 0) {
         // Connection closed

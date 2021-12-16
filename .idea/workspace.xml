@@ -14,10 +14,16 @@
   <component name="ChangeListManager">
     <list default="true" id="9409d901-51e5-4eef-99aa-3d0ee50b7ff7" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server" beforeDir="false" afterPath="$PROJECT_DIR$/server" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/client.c" beforeDir="false" afterPath="$PROJECT_DIR$/client.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/common.h" beforeDir="false" afterPath="$PROJECT_DIR$/common.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/server.c" beforeDir="false" afterPath="$PROJECT_DIR$/server.c" afterDir="false" />
     </list>
-    <list id="ed001e0f-e1e8-4513-b800-12ced39711d5" name="Changes by Boss" comment="" />
+    <list id="ed001e0f-e1e8-4513-b800-12ced39711d5" name="Changes by Boss" comment="">
+      <change beforePath="$PROJECT_DIR$/client.c" beforeDir="false" afterPath="$PROJECT_DIR$/client.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/common.h" beforeDir="false" afterPath="$PROJECT_DIR$/common.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/makefile" beforeDir="false" afterPath="$PROJECT_DIR$/makefile" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -28,6 +34,24 @@
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="LineStatusTrackerManager">
+    <file path="$PROJECT_DIR$/common.h">
+      <ranges>
+        <range start1="7" end1="7" start2="7" end2="11" changelist="ed001e0f-e1e8-4513-b800-12ced39711d5" />
+        <range start1="77" end1="78" start2="81" end2="83" changelist="9409d901-51e5-4eef-99aa-3d0ee50b7ff7" />
+      </ranges>
+    </file>
+    <file path="$PROJECT_DIR$/client.c">
+      <ranges>
+        <range start1="12" end1="12" start2="12" end2="15" changelist="ed001e0f-e1e8-4513-b800-12ced39711d5" />
+        <range start1="15" end1="16" start2="18" end2="79" changelist="9409d901-51e5-4eef-99aa-3d0ee50b7ff7" />
+        <range start1="60" end1="62" start2="123" end2="124" changelist="9409d901-51e5-4eef-99aa-3d0ee50b7ff7" />
+        <range start1="66" end1="76" start2="128" end2="129" changelist="9409d901-51e5-4eef-99aa-3d0ee50b7ff7" />
+        <range start1="77" end1="89" start2="130" end2="143" changelist="9409d901-51e5-4eef-99aa-3d0ee50b7ff7" />
+        <range start1="92" end1="92" start2="146" end2="148" changelist="9409d901-51e5-4eef-99aa-3d0ee50b7ff7" />
+      </ranges>
+    </file>
   </component>
   <component name="ProjectId" id="228IKV82XehhQp5HCJM45E4GX4M" />
   <component name="ProjectViewState">
@@ -55,9 +79,9 @@
     </key>
   </component>
   <component name="RunManager">
-    <configuration default="true" type="GradleAppRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
+    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
       <method v="2">
-        <option name="com.jetbrains.cidr.cpp.gradle.execution.GradleNativeBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
   </component>
@@ -79,6 +103,9 @@
       <workItem from="1639586451014" duration="4632000" />
       <workItem from="1639598499764" duration="3490000" />
       <workItem from="1639603400477" duration="2721000" />
+      <workItem from="1639647741078" duration="53000" />
+      <workItem from="1639647816630" duration="5028000" />
+      <workItem from="1639655172818" duration="5986000" />
     </task>
     <servers />
   </component>

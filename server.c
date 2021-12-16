@@ -20,7 +20,7 @@
 
 #include "common.h"
 
-const int BUFF_SIZE = 1024;
+#define ID_LEN 25
 
 int main(int argc, char *argv[])
 {
@@ -59,7 +59,6 @@ int main(int argc, char *argv[])
     //char *pseudos[8][32] = { 0 };
     //char pseudos[8] = { 0 };
 
-    #define ID_LEN 25
 
     int variableNumberOfElements = 8;
     char **pseudos;
