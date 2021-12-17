@@ -174,7 +174,6 @@ int main(int argc, char *argv[])
 
                             printf("%s connected \n", pseudo);
 
-                            printf("%s connected \n", pseudos[i]);
                             //user pseudo registered
                             printf("begin \n");
                             for (int i = 0; i < 8; i++)
@@ -188,12 +187,14 @@ int main(int argc, char *argv[])
                             // printf("User %s a dit %s\n", users[clients[i]], buffer);
                             printf("%s \n", pseudos[i]);
                             printf("a dit %s\n", buffer);
+                            size_t len_pseudo = strlen(pseudos[i]);
 
                             for (int j = 0; j < nclients; j++)
                             {
                                 if (FD_ISSET(clients[j], &writefds))
                                 {
                                     printf("sending %s \n", buffer);
+                                    ssend(clients[j], pseudos[i], len_pseudo);
                                     ssend(clients[j], buffer, nbytes);
                                 }
                             }

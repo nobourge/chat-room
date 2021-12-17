@@ -27,7 +27,7 @@ struct thread_args Structthread2;
 void* receive_ssend(void *Structthread)
 {
     char buffer[BUFF_SIZE];
-    char recvbuffer[BUFF_SIZE];
+    //char recvbuffer[BUFF_SIZE];
 
     ssize_t nbytes = 1;
 
@@ -58,7 +58,7 @@ void* receive_ssend(void *Structthread)
                 printf("\33[2K\r");
                 //printf("\033[A\r");
                 //printf("\33[2K\r");
-                printf("Client received %s\n", recvbuffer);
+                printf("%s\n", recvbuffer);
                 printf("\nEntrez votre message: ");
                 free(recvbuffer);
                 printf("Entrez votre message: ");
@@ -81,6 +81,7 @@ void* receive_ssend(void *Structthread)
         }
 
     }
+    return 0;
 }
 
 
