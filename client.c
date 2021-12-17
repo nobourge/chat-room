@@ -12,8 +12,6 @@
 #include <stdbool.h>
 #include <pthread.h>
 
-//#include <functional>   // fatal error: functional: No such file or directory
-
 #include "common.h"
 
 struct thread_args
@@ -29,6 +27,8 @@ struct thread_args Structthread2;
 void* receive_ssend(void *Structthread)
 {
     char buffer[BUFF_SIZE];
+    char recvbuffer[BUFF_SIZE];
+
     ssize_t nbytes = 1;
 
     struct thread_args *args = (struct thread_args *) Structthread;
@@ -43,37 +43,43 @@ void* receive_ssend(void *Structthread)
     //r_s = *Structthread->r_s;
     r_s = &args->r_s;
 
+
+
     while (nbytes > 0
-           && printf("Entrez votre message: "),
-            fgets(buffer,
-                  BUFF_SIZE,
-                  stdin)
             )
     {
         if (*r_s == 0)
         {
+
             char *recvbuffer;
             nbytes = receive(*sock, (void *) &recvbuffer);
             if (nbytes > 0)
             {
+                printf("\33[2K\r");
+                //printf("\033[A\r");
+                //printf("\33[2K\r");
                 printf("Client received %s\n", recvbuffer);
+                printf("\nEntrez votre message: ");
                 free(recvbuffer);
+                printf("Entrez votre message: ");
             }
         }
 
-        if (*r_s == 1)
+        if (*r_s == 1 &&
+            fgets(buffer,
+                  BUFF_SIZE,
+                  stdin)
+                )
         {
-        //Longueur du message size_t
-        size_t len = strlen(buffer);
-        // Supprimer le \n
-        buffer[len - 1] = '\0';
+            //Longueur du message size_t
+            size_t len = strlen(buffer);
+            // Supprimer le \n
+            buffer[len - 1] = '\0';
 
-        // On garde la même taille de string pour explicitement envoyer le '\0'
-        //int ssend(int sock, void* data, size_t len) {
-        nbytes = ssend(*sock, buffer, len);
-        //if (nbytes_to_send > 0) {
-
+            // On garde la même taille de string pour explicitement envoyer le '\0'
+            nbytes = ssend(*sock, buffer, len);
         }
+
     }
 }
 
@@ -89,7 +95,7 @@ int main(int argc,
     {
         printf("You have entered %d  arguments: \n", argc);
         printf("USAGE: $ ./client <pseudo> <ip_serveur> <port> \n"),
-        exit(1);
+                exit(1);
     }
 
     char *pseudo = argv[1];
@@ -97,7 +103,7 @@ int main(int argc,
     if (pseudo_len < 3 || 25 < pseudo_len )
     {
         printf(" <pseudo> characters quantity must be between 3 and 25 \n"),
-        exit(1);
+                exit(1);
     }
 
     const char *ip = argv[2]; // 127.0.0.1
@@ -106,26 +112,27 @@ int main(int argc,
     int port = conv_port(temp_port);
 
     int sock = checked(socket(AF_INET,
-                                  SOCK_STREAM,
-                                  0));
+                              SOCK_STREAM,
+                              0));
     struct sockaddr_in serv_addr;
     serv_addr.sin_family = AF_INET;
     serv_addr.sin_port = htons(port);
 
     // Conversion de string vers IPv4 ou IPv6 en binaire
     checked(inet_pton(AF_INET,
-                            ip,
-                            &serv_addr.sin_addr));
+                      ip,
+                      &serv_addr.sin_addr));
 
     //connection demand
     checked(connect(sock,
-                        (struct sockaddr *)&serv_addr,
-                                sizeof(serv_addr)));
+                    (struct sockaddr *)&serv_addr,
+                    sizeof(serv_addr)));
 
 
     //send pseudo
     ssend(sock, pseudo, pseudo_len);
 
+    printf("Entrez votre message: ");
 
 
     pthread_t tids[2];  // thread ids
