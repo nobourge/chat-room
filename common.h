@@ -9,7 +9,6 @@
 #include <limits.h>  // for INT_MAX, INT_MIN
 #include <errno.h>
 
-
 const int BUFF_SIZE = 1024;
 const int TIMESTAMP_SIZE = 20;
 

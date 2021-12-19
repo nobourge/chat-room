@@ -76,8 +76,7 @@ int main(int argc, char *argv[]) {
                 max_fd = clients[i];
             }
         }
-        // wait for an activity on one of the sockets,
-        // timeout is NULL
+        // wait for an activity on one of the sockets, timeout is NULL
         // select with
         // one fd_set in reading,
         // one fd_set in writing

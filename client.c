@@ -1,9 +1,7 @@
 /* Ce qu'il reste a faire :
  *
- * Client : L’utilisateur souhaite se déconnecter, et appuie sur CTRL+D -> boucle infinie bug !
- * Client : Si l connexion est perdue avec le serveur on affiche un message à l’utilisateur -> dunno?
- * Client : N’oubliez pas de gérer les accès concurrents aux ressources partagées -> semaphores?
- * Server : select -> a reviser !
+ * Client : N’oubliez pas de gérer les accès concurrents aux ressources partagées -> mutex?
+ * Server : select ?
  * PDF rapport !
  * Code : commentaires + docstrings !
  * !!! Le message doit comprendre : 1. size 2. timestamp 3. message -> on le fait a la fin
@@ -42,8 +40,13 @@ void* freceive(void *socket) {
             free(recvtimestamp);
             free(recvbuffer);
         }
+            // Si la connexion avec le serveur est perdue -> on affiche ce message
+        else {
+            printf("Connexion lost !\n");
+            exit(0);
+        }
     }
-    return 0;
+    return NULL;
 }
 
 void* fssend(void *socket) {
@@ -54,7 +57,9 @@ void* fssend(void *socket) {
     ssize_t nbytes = 1;
     ssize_t timestamp_nbytes = 1;
 
-    while (nbytes != 0 && timestamp_nbytes > 0 && printf("Entrez votre message: \n") && fgets(buffer, BUFF_SIZE, stdin)) {
+    printf("Entrez votre message: \n");
+    char *line = fgets(buffer, BUFF_SIZE, stdin);
+    while (nbytes != 0 && timestamp_nbytes > 0 && line != NULL) {
         // on initialize le temps
         time_t now = time(NULL);
         strftime(timestamp, 20, "%Y-%m-%d %H:%M:%S", localtime(&now));
@@ -68,8 +73,17 @@ void* fssend(void *socket) {
         // On garde la même taille de string pour explicitement envoyer le '\0'
         nbytes = ssend(sock, buffer, len);
         timestamp_nbytes = ssend(sock, timestamp, strlen(timestamp));
+
+        //get new line
+        printf("Entrez votre message: \n");
+        line = fgets(buffer, BUFF_SIZE, stdin);
     }
-    return 0;
+    // Si Ctrl+D -> alors connexion ended
+    if (line == NULL){
+        printf("Client ended session\n");
+        exit(0);
+    }
+    return NULL;
 }
 
 int main(int argc, char *argv[]) {
