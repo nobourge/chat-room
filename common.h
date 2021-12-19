@@ -15,7 +15,10 @@ const int TIMESTAMP_SIZE = 20;
 char ask_time() {
     char timestamp[TIMESTAMP_SIZE];
     time_t now = time(NULL);
-    strftime(timestamp, 20, "%Y-%m-%d %H:%M:%S", localtime(&now));
+    strftime(timestamp,
+             TIMESTAMP_SIZE,
+             "%Y-%m-%d %H:%M:%S",
+             localtime(&now));
     return *timestamp;
 }
 
@@ -59,7 +62,9 @@ int _checked(int ret, char* calling_function) {
 
 /**
  * @brief Send data under the form <size_t len><...data>
- * Function name is 'ssend' instead of 'send' because the latter already exists.
+ * Function name is 'ssend'
+ * instead of 'send'
+ * because the latter already exists.
  */
 
 ///
@@ -67,7 +72,8 @@ int _checked(int ret, char* calling_function) {
 /// \param data to be sent
 /// \param len of data
 /// \return
-int ssend(int sock, void* data, size_t len) {
+int ssend(int sock, void* data, size_t len)
+{
     //Longueur du message size_t
     checked(write(sock, &len, sizeof(len)));
     return checked(write(sock, data, len));
@@ -91,9 +97,10 @@ size_t receive(int sock, void** dest)
     unsigned char* buffer = malloc(nbytes_to_receive);
     if (buffer == NULL)
     {
-        fprintf(stderr, "malloc could not allocate %zd bytes", nbytes_to_receive);
-        perror("");
-        exit(1);
+
+        //fprintf(stderr, "malloc could not allocate %zd bytes", nbytes_to_receive);
+        //perror("");
+        //exit(1);
     }
     size_t total_received = 0;
     while (nbytes_to_receive > 0)

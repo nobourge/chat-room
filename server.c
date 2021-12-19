@@ -33,6 +33,9 @@ int main(int argc, char *argv[]) {
     // converting char to int
     int port = conv_port(temp_port);
 
+    /**
+     *
+     * */
     int opt = 1;
     int master_socket = checked(socket(AF_INET, SOCK_STREAM, 0));
     checked(setsockopt(master_socket, SOL_SOCKET, SO_REUSEADDR, (char *)&opt, sizeof(opt)));
