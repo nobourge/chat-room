@@ -26,6 +26,9 @@
 
 #include "common.h"
 
+///
+/// \param socket
+/// \return
 void* freceive(void *socket) {
     int sock = *(int*)socket;
     ssize_t nbytes = 1;
@@ -46,6 +49,9 @@ void* freceive(void *socket) {
     return 0;
 }
 
+///
+/// \param socket
+/// \return
 void* fssend(void *socket) {
     int sock = *(int*)socket;
     char buffer[BUFF_SIZE];
@@ -54,7 +60,12 @@ void* fssend(void *socket) {
     ssize_t nbytes = 1;
     ssize_t timestamp_nbytes = 1;
 
-    while (nbytes != 0 && timestamp_nbytes > 0 && printf("Entrez votre message: \n") && fgets(buffer, BUFF_SIZE, stdin)) {
+    char *line = fgets(buffer, BUFF_SIZE, stdin);
+    while (nbytes != 0
+    && timestamp_nbytes > 0
+    && printf("Entrez votre message: \n")
+    //&& fgets(buffer, BUFF_SIZE, stdin)) {
+    && line != NULL) {
         // on initialize le temps
         time_t now = time(NULL);
         strftime(timestamp, 20, "%Y-%m-%d %H:%M:%S", localtime(&now));
@@ -65,9 +76,20 @@ void* fssend(void *socket) {
         // Supprimer le \n
         buffer[len - 1] = '\0';
 
+        printf("sending ctrl c");
         // On garde la même taille de string pour explicitement envoyer le '\0'
         nbytes = ssend(sock, buffer, len);
         timestamp_nbytes = ssend(sock, timestamp, strlen(timestamp));
+
+        //get new line
+        line = fgets(buffer, BUFF_SIZE, stdin);
+
+    }
+    if (line == NULL){
+        printf("disconection \n");
+        char diconnect_msg[BUFF_SIZE];
+        //ssend(sock, diconnect_msg, len);
+        exit(0);
     }
     return 0;
 }
@@ -75,8 +97,8 @@ void* fssend(void *socket) {
 int main(int argc, char *argv[]) {
     if (argc != 4) {
         printf("You have entered %d  arguments: \n", argc);
-        printf("USAGE: $ ./client <pseudo> <ip_serveur> <port> \n"),
-                exit(1);
+        printf("USAGE: $ ./client <pseudo> <ip_serveur> <port> \n");
+        exit(1);
     }
     char *pseudo = argv[1];
     size_t pseudo_len = strlen(pseudo);
@@ -86,6 +108,7 @@ int main(int argc, char *argv[]) {
     }
     const char *ip = argv[2]; // 127.0.0.1
     const char *temp_port = argv[3];
+
     // converting char to int
     int port = conv_port(temp_port);
 
@@ -103,7 +126,10 @@ int main(int argc, char *argv[]) {
     //send pseudo
     char timestamp[TIMESTAMP_SIZE];
     time_t now = time(NULL);
-    strftime(timestamp, 20, "%Y-%m-%d %H:%M:%S", localtime(&now));
+    strftime(timestamp,
+             TIMESTAMP_SIZE,
+             "%Y-%m-%d %H:%M:%S",
+             localtime(&now));
     ssend(sock, pseudo, pseudo_len);
     ssend(sock, timestamp, strlen(timestamp));
 
