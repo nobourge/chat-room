@@ -13,8 +13,8 @@
 
 #include "common.h"
 
-const char *PROMPT = "Entrez votre message: ";
-int PROMPT_LEN = sizeof(PROMPT);
+#define PROMPT "Entrez votre message: "
+#define PROMPT_LEN (strlen(PROMPT))
 
 // structure contenant les mutexes et le socket
 typedef struct {
@@ -22,7 +22,7 @@ typedef struct {
     int* sock;
 } thread_args_t;
 
-///on recupere les donnees envoyées par le server
+///recupere les donnees envoyées par le server
 /// \param ptr
 /// \return
 void* freceive(void* ptr) {
@@ -41,10 +41,10 @@ void* freceive(void* ptr) {
         ssize_t timestamp_nbytes = receive(*sock, (void *) &recvtimestamp);
         if (nbytes > 0 && timestamp_nbytes > 0 && pseudo_nbytes > 0) {
             printf("\33[2K\r");
-            printf("User %s sent %s at : %s\n", pseudo, recvbuffer, recvtimestamp);
+            printf("%s User %s sent : %s \n %s", recvtimestamp, pseudo, recvbuffer, PROMPT);
             free(recvtimestamp);
             free(recvbuffer);
-            printf("%s",PROMPT);
+            //printf("%s",PROMPT);
         }
             // Si la connexion avec le serveur est perdue -> on affiche ce message
         else {

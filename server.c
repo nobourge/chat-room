@@ -18,8 +18,13 @@
 
 #include "common.h"
 
-#define ID_LEN 25
+#define PSEUDO_LEN_MAX 25
+#define CLIENTS_QUANTITY_MAX 1024
 
+///
+/// \param argc
+/// \param argv
+/// \return
 int main(int argc, char *argv[]) {
     if (argc != 2) {
         printf("You have entered %d  arguments: \n", argc);
@@ -50,12 +55,11 @@ int main(int argc, char *argv[]) {
     int clients[BUFF_SIZE];
     int nclients = 0;
 
-    int variableNumberOfElements = 1024;
     char **pseudos;
 
-    pseudos = malloc(variableNumberOfElements * sizeof(char*));
-    for (int i = 0; i < variableNumberOfElements; i++){
-        pseudos[i] = malloc((ID_LEN+1) * sizeof(char));
+    pseudos = malloc(CLIENTS_QUANTITY_MAX * sizeof(char*));
+    for (int i = 0; i < CLIENTS_QUANTITY_MAX; i++){
+        pseudos[i] = malloc((PSEUDO_LEN_MAX+1) * sizeof(char));
         strcpy(pseudos[i], "NULL");
     }
 
@@ -90,18 +94,41 @@ int main(int argc, char *argv[]) {
             // Sinon, c'est un message d'un client
             for (int i = 0; i < nclients; i++) {
                 if (FD_ISSET(clients[i], &readfds)) {
+
                     char *buffer;
                     char *timestamp;
                     size_t nbytes = receive(clients[i], (void *)&buffer);
                     size_t timestamp_nbytes = receive(clients[i], (void *)&timestamp);
                     if (nbytes > 0) {
+                        /**
+                        char *connection_confirm_ptr;
+                        int send_connection_confirm = 0;
+                        */
+
                         if (strcmp(pseudos[i], "NULL") == 0) {
-                            char *pseudo = buffer;
+                            /**user pseudo not yet registered*/
+                            char *pseudo_ptr = buffer;
                             strcpy(pseudos[i], buffer);
-                            printf("User %s connected at %s\n", pseudo, timestamp);
+                            /**pseudo registered*/
+
+                            printf("%s User %s connected \n", timestamp, pseudo_ptr);
+                            /**
+                            char pseudo[strlen(buffer)];
+                            strcpy(pseudo, pseudo_ptr);
+                            char *hard_pseudo_ptr = pseudo;
+
+                            char connected[] = " connected";
+                            char *connected_ptr = connected;
+
+                            char *connection_confirm_ptr = hard_pseudo_ptr;
+
+                            strcat(connection_confirm_ptr, connected_ptr);
+                            printf("connection_confirm : %s \n", connection_confirm_ptr);
+                            send_connection_confirm = 1;
+                            */
                         }
                         else {
-                            printf("User %s a dit %s a : %s\n", pseudos[i], buffer, timestamp);
+                            printf("%s User %s a dit : %s \n", timestamp, pseudos[i], buffer);
                             size_t len_pseudo = strlen(pseudos[i]);
                             for (int j = 0; j < nclients; j++) {
                                 if (FD_ISSET(clients[j], &writefds)) {
@@ -113,6 +140,19 @@ int main(int argc, char *argv[]) {
                         }
                         free(buffer);
                         free(timestamp);
+                        /**
+                        if (send_connection_confirm == 1)
+                        {
+                            printf("connection_confirm : %s \n", connection_confirm);
+
+                            for (int j = 0; j < nclients; j++)
+                            {
+                                if (FD_ISSET(clients[j], &writefds))
+                                {
+                                    ssend(clients[j], connection_confirm_ptr, sizeof(connection_confirm_ptr));
+                                }
+                            }
+                        }*/
                     }
                     else {
                         close(clients[i]);
