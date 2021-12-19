@@ -1,3 +1,8 @@
+/* Chat room program
+ * Auteurs : Noe Bourgeois, Morari Augustin-Constantin
+ * Date : 19/12/2021
+ */
+
 #ifndef __COMMON_H
 #define __COMMON_H
 
@@ -9,22 +14,15 @@
 #include <limits.h>  // for INT_MAX, INT_MIN
 #include <errno.h>
 
-const int BUFF_SIZE = 1005;
+const int BUFF_SIZE = 1024;
 const int TIMESTAMP_SIZE = 20;
 
-char ask_time() {
-    char timestamp[TIMESTAMP_SIZE];
-    time_t now = time(NULL);
-    strftime(timestamp, 19, "%Y-%m-%d %H:%M:%S", localtime(&now));
-    return *timestamp;
-}
-
-/// conversion of port number given as argument of program to int
+/// Le port est passe en format de string, on le converti en int
 /// \param temp_port
-/// \return
+/// \return int port
 int conv_port(const char *temp_port) {
     char *p;
-    int num;
+    int port_final;
     errno = 0;
     long port = strtol(temp_port, &p, 10);
 
@@ -37,9 +35,9 @@ int conv_port(const char *temp_port) {
     else
     {
         // No error
-        num = port;
+        port_final = port;
     }
-    return num;
+    return port_final;
 }
 
 ///
@@ -62,11 +60,11 @@ int _checked(int ret, char* calling_function) {
  * Function name is 'ssend' instead of 'send' because the latter already exists.
  */
 
-///
+/// On ecrit sur le socket les donnes qu'on veut passer au client/server
 /// \param sock socket to send data to
 /// \param data to be sent
 /// \param len of data
-/// \return
+/// \return int
 int ssend(int sock, void* data, size_t len) {
     //Longueur du message size_t
     checked(write(sock, &len, sizeof(len)));

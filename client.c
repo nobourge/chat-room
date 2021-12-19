@@ -1,4 +1,7 @@
-// Client side C
+/* Chat room program
+ * Auteurs : Noe Bourgeois, Morari Augustin-Constantin
+ * Date : 19/12/2021
+ */
 
 #include <arpa/inet.h>
 #include <stdio.h>
@@ -22,7 +25,7 @@ typedef struct {
     int* sock;
 } thread_args_t;
 
-///recupere les donnees envoyées par le server
+/// Recupere les donnees envoyées par le server
 /// \param ptr
 /// \return
 void* freceive(void* ptr) {
@@ -40,27 +43,28 @@ void* freceive(void* ptr) {
         nbytes = receive(*sock, (void *) &recvbuffer);
         ssize_t timestamp_nbytes = receive(*sock, (void *) &recvtimestamp);
         if (nbytes > 0 && timestamp_nbytes > 0 && pseudo_nbytes > 0) {
+            // clear the line that the cursor is currently on
             printf("\33[2K\r");
-            printf("%s User %s sent : %s \n %s", recvtimestamp, pseudo, recvbuffer, PROMPT);
+            printf("%s User %s sent : %s \n%s\n", recvtimestamp, pseudo, recvbuffer, PROMPT);
             free(recvtimestamp);
             free(recvbuffer);
-            //printf("%s",PROMPT);
         }
-            // Si la connexion avec le serveur est perdue -> on affiche ce message
+        // Si la connexion avec le serveur est perdue -> on affiche ce message
         else {
+            // clear the line that the cursor is currently on
             printf("\33[2K\r");
-            printf("Connexion lost !\n");
+            printf("Connexion with the server lost !\nStart the server again !\n");
             exit(0);
         }
     }
     return NULL;
 }
 
-///envoie les données au server
+/// Envoie les données au server
 /// \param ptr pointeur vers le string ecrit en stdin par user
 /// \return
 void* fssend(void* ptr) {
-    // on recupere les donnees de la structure passee en param
+    // on recupere les donnees de la structure passee en parametre
     thread_args_t* args = (thread_args_t*)ptr;
     int* sock = args->sock;
     pthread_mutex_t* mutex = args->mutex;
@@ -98,6 +102,7 @@ void* fssend(void* ptr) {
 
     if (line == NULL){
         // Si Ctrl+D ->  connexion ended
+        // clear the line that the cursor is currently on
         printf("\33[2K\r");
         printf("Client ended session\n");
         exit(0);
@@ -105,15 +110,15 @@ void* fssend(void* ptr) {
     return NULL;
 }
 
-///
+/// Initialise les parametres, le socket, les mutexes et les threads
 /// \param argc
 /// \param argv
-/// \return
+/// \return 0
 int main(int argc, char *argv[]) {
     if (argc != 4) {
         printf("You have entered %d  arguments: \n", argc);
-        printf("USAGE: $ ./client <pseudo> <ip_serveur> <port> \n"),
-                exit(1);
+        printf("USAGE: $ ./client <pseudo> <ip_serveur> <port> \n");
+        exit(1);
     }
     char *pseudo = argv[1];
     size_t pseudo_len = strlen(pseudo);
@@ -121,8 +126,8 @@ int main(int argc, char *argv[]) {
         printf(" <pseudo>  must have between 3 and 25 characters\n");
         exit(1);
     }
-    const char *ip = argv[2]; // 127.0.0.1
-    const char *temp_port = argv[3];
+    const char *ip = argv[2]; // initialement 127.0.0.1
+    const char *temp_port = argv[3]; // initalement 8080
     // converting char to int
     int port = conv_port(temp_port);
 
@@ -140,7 +145,7 @@ int main(int argc, char *argv[]) {
     //send pseudo
     char timestamp[TIMESTAMP_SIZE];
     time_t now = time(NULL);
-    strftime(timestamp, 20, "%Y-%m-%d %H:%M:%S", localtime(&now));
+    strftime(timestamp, TIMESTAMP_SIZE, "%Y-%m-%d %H:%M:%S", localtime(&now));
     ssend(sock, pseudo, pseudo_len);
     ssend(sock, timestamp, strlen(timestamp));
 
@@ -157,6 +162,7 @@ int main(int argc, char *argv[]) {
     pthread_create(&tids[1], NULL, freceive, &args);
     pthread_join(tids[0], NULL);
     pthread_join(tids[1], NULL);
+
     // on detruit le mutex a la fin de l'execution
     pthread_mutex_destroy(&m);
 

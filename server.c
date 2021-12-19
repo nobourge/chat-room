@@ -1,4 +1,7 @@
-// Server side C
+/* Chat room program
+ * Auteurs : Noe Bourgeois, Morari Augustin-Constantin
+ * Date : 19/12/2021
+ */
 
 #include <netinet/in.h>
 #include <stdio.h>
@@ -21,10 +24,10 @@
 #define PSEUDO_LEN_MAX 25
 #define CLIENTS_QUANTITY_MAX 1024
 
-///
+/// Serveur initialise les arguments, le socket et recois et envoie des messages
 /// \param argc
 /// \param argv
-/// \return
+/// \return 0
 int main(int argc, char *argv[]) {
     if (argc != 2) {
         printf("You have entered %d  arguments: \n", argc);
@@ -57,6 +60,7 @@ int main(int argc, char *argv[]) {
 
     char **pseudos;
 
+    // allocation de memoire pour la database
     pseudos = malloc(CLIENTS_QUANTITY_MAX * sizeof(char*));
     for (int i = 0; i < CLIENTS_QUANTITY_MAX; i++){
         pseudos[i] = malloc((PSEUDO_LEN_MAX+1) * sizeof(char));
@@ -80,9 +84,9 @@ int main(int argc, char *argv[]) {
         }
         // wait for an activity on one of the sockets,
         // timeout is NULL
-        // select with
-        // one fd_set in reading,
-        // one fd_set in writing
+        // select avec
+        // un fd_set in lecture,
+        // un fd_set en ecriture
         select(max_fd + 1, &readfds, &writefds, NULL, NULL);
 
         if (FD_ISSET(master_socket, &readfds)) {
@@ -94,39 +98,19 @@ int main(int argc, char *argv[]) {
             // Sinon, c'est un message d'un client
             for (int i = 0; i < nclients; i++) {
                 if (FD_ISSET(clients[i], &readfds)) {
-
                     char *buffer;
                     char *timestamp;
                     size_t nbytes = receive(clients[i], (void *)&buffer);
                     size_t timestamp_nbytes = receive(clients[i], (void *)&timestamp);
                     if (nbytes > 0) {
-                        /**
-                        char *connection_confirm_ptr;
-                        int send_connection_confirm = 0;
-                        */
-
+                        // si c'est une premiere connexion...
                         if (strcmp(pseudos[i], "NULL") == 0) {
-                            /**user pseudo not yet registered*/
                             char *pseudo_ptr = buffer;
                             strcpy(pseudos[i], buffer);
-                            /**pseudo registered*/
-
+                            // pseudo is registered
                             printf("%s User %s connected \n", timestamp, pseudo_ptr);
-                            /**
-                            char pseudo[strlen(buffer)];
-                            strcpy(pseudo, pseudo_ptr);
-                            char *hard_pseudo_ptr = pseudo;
-
-                            char connected[] = " connected";
-                            char *connected_ptr = connected;
-
-                            char *connection_confirm_ptr = hard_pseudo_ptr;
-
-                            strcat(connection_confirm_ptr, connected_ptr);
-                            printf("connection_confirm : %s \n", connection_confirm_ptr);
-                            send_connection_confirm = 1;
-                            */
                         }
+                        // si un utilisateur enregistre dans la databe veut envoyer un message...
                         else {
                             printf("%s User %s a dit : %s \n", timestamp, pseudos[i], buffer);
                             size_t len_pseudo = strlen(pseudos[i]);
@@ -140,19 +124,6 @@ int main(int argc, char *argv[]) {
                         }
                         free(buffer);
                         free(timestamp);
-                        /**
-                        if (send_connection_confirm == 1)
-                        {
-                            printf("connection_confirm : %s \n", connection_confirm);
-
-                            for (int j = 0; j < nclients; j++)
-                            {
-                                if (FD_ISSET(clients[j], &writefds))
-                                {
-                                    ssend(clients[j], connection_confirm_ptr, sizeof(connection_confirm_ptr));
-                                }
-                            }
-                        }*/
                     }
                     else {
                         close(clients[i]);
