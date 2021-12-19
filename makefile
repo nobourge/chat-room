@@ -1,7 +1,7 @@
 all: client server
 
-client3: client.c common.h
-	gcc -pthread -lpthread -o client client.c -Wall -Wpedantic
+client: client.c common.h
+	gcc -Wall  -o client client.c -lpthread
 
-server3: server.c common.h
-	gcc -pthread -o server server.c -Wall -Wpedantic
+server: server.c common.h
+	gcc -Wall -o server server.c

@@ -22,10 +22,8 @@
 
 #define ID_LEN 25
 
-int main(int argc, char *argv[])
-{
-    if (argc != 2)
-    {
+int main(int argc, char *argv[]) {
+    if (argc != 2) {
         printf("You have entered %d  arguments: \n", argc);
         printf("USAGE: $ ./server <port> \n %d", argc);
         exit(1);
@@ -54,12 +52,6 @@ int main(int argc, char *argv[])
     int clients[BUFF_SIZE];
     int nclients = 0;
 
-    /**database indice=id value=pseudo (a voir si ca marche)*/
-    //double users[1024];
-    //char *pseudos[8][32] = { 0 };
-    //char pseudos[8] = { 0 };
-
-
     int variableNumberOfElements = 8;
     char **pseudos;
 
@@ -68,23 +60,6 @@ int main(int argc, char *argv[])
         pseudos[i] = malloc((ID_LEN+1) * sizeof(char));
         strcpy(pseudos[i], "NULL");
     }
-
-
-    printf("begin \n");
-    for (int i = 0; i < 8; i++)
-    {
-        printf("%d : %s \n", i, pseudos[i]);
-    }
-    printf("end \n");
-
-    /**
-    int sizeof_pseudos = 8;
-    char const *pseudos[8];
-    for (int i = 0; i < 8; i++)
-    {
-        pseudos[i] = NULL;
-    }
-    */
 
     while (true)
     {
@@ -106,110 +81,47 @@ int main(int argc, char *argv[])
         // select with
         // one fd_set in reading,
         // one fd_set in writing
-        select(max_fd + 1,
-               &readfds,
-               &writefds,
-               NULL,
-               NULL);
+        select(max_fd + 1, &readfds, &writefds, NULL, NULL);
 
         if (FD_ISSET(master_socket, &readfds)) {
-
-            // Si c'est le master socket qui a des donnees,
-            // c'est une nouvelle connexion.
+            // Si c'est le master socket qui a des donnees, c'est une nouvelle connexion.
             clients[nclients] = accept(master_socket, (struct sockaddr *)&address, (socklen_t *)&addrlen);
             nclients++;
-            //printf("connection \n");
-
-//            for (int i = 0; i < nclients; i++)
-//            {
-//                char *pseudo;
-//                size_t nbytez = receive(clients[i], (void *) &pseudo);
-//                //users[clients[i]] = *pseudo;
-//                users[clients[i]] = &pseudo;
-//            }
         }
-        else
-        {
+        else {
             // Sinon, c'est un message d'un client
-            for (int i = 0; i < nclients; i++)
-            {
-                if (FD_ISSET(clients[i], &readfds))
-                {
-                    //msg received on client_sockets[i]
-                    //printf("before buffer init %d : %s \n", 0, pseudos[0]);
-                    //printf("before buffer init %d : %s \n", i, pseudos[i]);
-
+            for (int i = 0; i < nclients; i++) {
+                if (FD_ISSET(clients[i], &readfds)) {
                     char *buffer;
+                    char *timestamp;
                     size_t nbytes = receive(clients[i], (void *)&buffer);
-                    if (nbytes > 0)
-                    {
-                        printf("begin \n");
-                        for (int i = 0; i < 8; i++)
-                        {
-                            printf("%d : %s \n", i, pseudos[i]);
-                        }
-                        printf("end \n");
-
-                        if (strcmp(pseudos[i], "NULL") == 0)
-                        {
-                            /**not yet connected*/
+                    size_t timestamp_nbytes = receive(clients[i], (void *)&timestamp);
+                    if (nbytes > 0) {
+                        if (strcmp(pseudos[i], "NULL") == 0) {
                             char *pseudo = buffer;
-                            //char pseudo[] = buffer;
-
-                            //printf(" pseudo %d : %s \n", i, pseudos[i]);
-
-                            printf("buffer: %s", buffer);
-                            /** user pseudo not registered */
-                            printf("begin \n");
-                            for (int i = 0; i < 8; i++)
-                            {
-                                printf("%d : %s \n", i, pseudos[i]);
-                            }
-                            printf("end \n");
-
-                            //strcpy_s(pseudos[i], *buffer);
                             strcpy(pseudos[i], buffer);
-                            //pseudos[i] = *buffer;
-                            //printf("pseudo = %s", pseudo);
-
-                            printf("%s connected \n", pseudo);
-
-                            //user pseudo registered
-                            printf("begin \n");
-                            for (int i = 0; i < 8; i++)
-                            {
-                                printf("%d : %s \n", i, pseudos[i]);
-                            }
-                            printf("end \n");
+                            printf("User %s connected at %s\n", pseudo, timestamp);
                         }
-                        else
-                        {
-                            // printf("User %s a dit %s\n", users[clients[i]], buffer);
-                            printf("%s \n", pseudos[i]);
-                            printf("a dit %s\n", buffer);
+                        else {
+                            printf("User %s a dit %s a : %s\n", pseudos[i], buffer, timestamp);
                             size_t len_pseudo = strlen(pseudos[i]);
-
-                            for (int j = 0; j < nclients; j++)
-                            {
-                                if (FD_ISSET(clients[j], &writefds))
-                                {
-                                    printf("sending %s \n", buffer);
+                            for (int j = 0; j < nclients; j++) {
+                                if (FD_ISSET(clients[j], &writefds)) {
                                     ssend(clients[j], pseudos[i], len_pseudo);
                                     ssend(clients[j], buffer, nbytes);
+                                    ssend(clients[j], timestamp, timestamp_nbytes);
                                 }
                             }
                         }
                         free(buffer);
-                        //free(pseudo);
-
+                        free(timestamp);
                     }
-
-                    else
-                    {
+                    else {
                         close(clients[i]);
-                        // On deplace le dernier socket a la place de libre
-                        // pour ne pas faire de trou.
+                        // On deplace le dernier socket a la place de libre pour ne pas faire de trou.
                         clients[i] = clients[nclients - 1];
+                        printf("User %s disconnected\n", pseudos[i]);
+                        strcpy(pseudos[i], "NULL");
                         nclients--;
                     }
                 }

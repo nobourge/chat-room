@@ -6,9 +6,19 @@
 #include <unistd.h>
 #include <time.h>
 #include <pthread.h>
+#include <limits.h>  // for INT_MAX, INT_MIN
+#include <errno.h>
 
 
 const int BUFF_SIZE = 1024;
+const int TIMESTAMP_SIZE = 20;
+
+char ask_time() {
+    char timestamp[TIMESTAMP_SIZE];
+    time_t now = time(NULL);
+    strftime(timestamp, 20, "%Y-%m-%d %H:%M:%S", localtime(&now));
+    return *timestamp;
+}
 
 ///
 /// \param temp_port
@@ -22,9 +32,11 @@ int conv_port(const char *temp_port) {
     // Check for errors: e.g., the string does not represent an integer
     // or the integer is larger than int
     if (errno != 0 || *p != '\0' || port > INT_MAX || port < INT_MIN) {
-        // Put here the handling of the error, like exiting the program with
-        // an error message
-    } else {
+        printf("error with the conversion of the port\n");
+        exit(1);
+    }
+    else
+    {
         // No error
         num = port;
     }
@@ -57,17 +69,8 @@ int _checked(int ret, char* calling_function) {
 /// \param len of data
 /// \return
 int ssend(int sock, void* data, size_t len) {
+    //Longueur du message size_t
     checked(write(sock, &len, sizeof(len)));
-
-//    time_t mytime = time(NULL);
-//    char * timestamp = ctime(&mytime);
-//    timestamp[strlen(timestamp)-1] = '\0';
-
-//    char timenow[20];
-//    time_t now = time(NULL);
-//    strftime(timenow, 20, "%Y-%m-%d %H:%M:%S", localtime(&now));
-//    endata = timenow+data;
-//    printf("%s", endata);
     return checked(write(sock, data, len));
 }
 
