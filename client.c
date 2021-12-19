@@ -1,22 +1,11 @@
-/* Ce qu'il reste a faire :
- *
- * Client : N’oubliez pas de gérer les accès concurrents aux ressources partagées -> mutex?
- * Server : select ?
- * PDF rapport !
- * Code : commentaires + docstrings !
- * !!! Le message doit comprendre : 1. size 2. timestamp 3. message -> on le fait a la fin
- * !!! Pour l'instant on envoie le timestamp et le message separement.
- */
+// Client side C
 
-// Client side C/C++ program to demonstrate Socket programming
 #include <arpa/inet.h>
 #include <stdio.h>
 #include <string.h>
 #include <sys/socket.h>
 #include <unistd.h>
 #include <sys/select.h>
-#include <errno.h>   // for errno
-#include <limits.h>  // for INT_MAX, INT_MIN
 #include <stdlib.h>  // for strtol
 #include <signal.h>
 #include <stdbool.h>
@@ -24,24 +13,42 @@
 
 #include "common.h"
 
-void* freceive(void *socket) {
-    int sock = *(int*)socket;
+const char *PROMPT = "Entrez votre message: ";
+int PROMPT_LEN = sizeof(PROMPT);
+
+// structure contenant les mutexes et le socket
+typedef struct {
+    pthread_mutex_t* mutex;
+    int* sock;
+} thread_args_t;
+
+///on recupere les donnees envoyées par le server
+/// \param ptr
+/// \return
+void* freceive(void* ptr) {
+    // on recupere les donnees de la structure passee en param
+    thread_args_t* args = (thread_args_t*)ptr;
+    int* sock = args->sock;
+
     ssize_t nbytes = 1;
 
     while (nbytes != 0) {
         char *recvbuffer;
         char *recvtimestamp;
         char *pseudo;
-        ssize_t pseudo_nbytes = receive(sock, (void *) &pseudo);
-        nbytes = receive(sock, (void *) &recvbuffer);
-        ssize_t timestamp_nbytes = receive(sock, (void *) &recvtimestamp);
+        ssize_t pseudo_nbytes = receive(*sock, (void *) &pseudo);
+        nbytes = receive(*sock, (void *) &recvbuffer);
+        ssize_t timestamp_nbytes = receive(*sock, (void *) &recvtimestamp);
         if (nbytes > 0 && timestamp_nbytes > 0 && pseudo_nbytes > 0) {
+            printf("\33[2K\r");
             printf("User %s sent %s at : %s\n", pseudo, recvbuffer, recvtimestamp);
             free(recvtimestamp);
             free(recvbuffer);
+            printf("%s",PROMPT);
         }
             // Si la connexion avec le serveur est perdue -> on affiche ce message
         else {
+            printf("\33[2K\r");
             printf("Connexion lost !\n");
             exit(0);
         }
@@ -49,15 +56,22 @@ void* freceive(void *socket) {
     return NULL;
 }
 
-void* fssend(void *socket) {
-    int sock = *(int*)socket;
+///envoie les données au server
+/// \param ptr pointeur vers le string ecrit en stdin par user
+/// \return
+void* fssend(void* ptr) {
+    // on recupere les donnees de la structure passee en param
+    thread_args_t* args = (thread_args_t*)ptr;
+    int* sock = args->sock;
+    pthread_mutex_t* mutex = args->mutex;
+
     char buffer[BUFF_SIZE];
     char timestamp[TIMESTAMP_SIZE];
 
     ssize_t nbytes = 1;
     ssize_t timestamp_nbytes = 1;
 
-    printf("Entrez votre message: \n");
+    printf("%s",PROMPT);
     char *line = fgets(buffer, BUFF_SIZE, stdin);
     while (nbytes != 0 && timestamp_nbytes > 0 && line != NULL) {
         // on initialize le temps
@@ -71,21 +85,30 @@ void* fssend(void *socket) {
         buffer[len - 1] = '\0';
 
         // On garde la même taille de string pour explicitement envoyer le '\0'
-        nbytes = ssend(sock, buffer, len);
-        timestamp_nbytes = ssend(sock, timestamp, strlen(timestamp));
+        // on bloque le socket quand on veut ecrire qq chose dessus
+        pthread_mutex_lock(mutex);
+        nbytes = ssend(*sock, buffer, len);
+        timestamp_nbytes = ssend(*sock, timestamp, strlen(timestamp));
+        // we unlock the socket
+        pthread_mutex_unlock(mutex);
 
         //get new line
-        printf("Entrez votre message: \n");
         line = fgets(buffer, BUFF_SIZE, stdin);
     }
-    // Si Ctrl+D -> alors connexion ended
+
     if (line == NULL){
+        // Si Ctrl+D ->  connexion ended
+        printf("\33[2K\r");
         printf("Client ended session\n");
         exit(0);
     }
     return NULL;
 }
 
+///
+/// \param argc
+/// \param argv
+/// \return
 int main(int argc, char *argv[]) {
     if (argc != 4) {
         printf("You have entered %d  arguments: \n", argc);
@@ -95,7 +118,7 @@ int main(int argc, char *argv[]) {
     char *pseudo = argv[1];
     size_t pseudo_len = strlen(pseudo);
     if (pseudo_len < 3 || 25 < pseudo_len ) {
-        printf(" <pseudo> characters quantity must be between 3 and 25 \n");
+        printf(" <pseudo>  must have between 3 and 25 characters\n");
         exit(1);
     }
     const char *ip = argv[2]; // 127.0.0.1
@@ -121,13 +144,21 @@ int main(int argc, char *argv[]) {
     ssend(sock, pseudo, pseudo_len);
     ssend(sock, timestamp, strlen(timestamp));
 
+    // on initialise le mutex
+    pthread_mutex_t m = PTHREAD_MUTEX_INITIALIZER;
+    thread_args_t args;
+    args.sock = &sock;
+    args.mutex = &m;
+
     // thread ids
     pthread_t tids[2];
 
-    pthread_create(&tids[0], NULL, fssend, (void *) &sock);
-    pthread_create(&tids[1], NULL, freceive, (void *) &sock);
+    pthread_create(&tids[0], NULL, fssend, &args);
+    pthread_create(&tids[1], NULL, freceive, &args);
     pthread_join(tids[0], NULL);
     pthread_join(tids[1], NULL);
+    // on detruit le mutex a la fin de l'execution
+    pthread_mutex_destroy(&m);
 
     printf("Program is shutting down.\n");
     return 0;

@@ -1,4 +1,4 @@
-// Server side C/C++ program to demonstrate Socket programming
+// Server side C
 
 #include <netinet/in.h>
 #include <stdio.h>
@@ -7,8 +7,6 @@
 #include <sys/socket.h>
 #include <unistd.h>
 #include <sys/select.h>
-#include <errno.h>   // for errno
-#include <limits.h>  // for INT_MAX, INT_MIN
 #include <stdlib.h>  // for strtol
 #include <stdbool.h>
 #include <netinet/in.h>
@@ -33,9 +31,6 @@ int main(int argc, char *argv[]) {
     // converting char to int
     int port = conv_port(temp_port);
 
-    /**
-     *
-     * */
     int opt = 1;
     int master_socket = checked(socket(AF_INET, SOCK_STREAM, 0));
     checked(setsockopt(master_socket, SOL_SOCKET, SO_REUSEADDR, (char *)&opt, sizeof(opt)));
@@ -55,7 +50,7 @@ int main(int argc, char *argv[]) {
     int clients[BUFF_SIZE];
     int nclients = 0;
 
-    int variableNumberOfElements = 8;
+    int variableNumberOfElements = 1024;
     char **pseudos;
 
     pseudos = malloc(variableNumberOfElements * sizeof(char*));
@@ -79,7 +74,8 @@ int main(int argc, char *argv[]) {
                 max_fd = clients[i];
             }
         }
-        // wait for an activity on one of the sockets, timeout is NULL
+        // wait for an activity on one of the sockets,
+        // timeout is NULL
         // select with
         // one fd_set in reading,
         // one fd_set in writing
